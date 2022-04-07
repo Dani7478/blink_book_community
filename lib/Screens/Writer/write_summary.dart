@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:blink_book_community/Widgets/text_widget.dart';
 import 'package:flutter/material.dart';
 
@@ -14,8 +16,10 @@ class WriteSummaryScreen extends StatefulWidget {
   _WriteSummaryScreenState createState() => _WriteSummaryScreenState();
 }
 
-
 class _WriteSummaryScreenState extends State<WriteSummaryScreen> {
+
+  final TextEditingController _summaryController=new TextEditingController();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -49,18 +53,26 @@ class _WriteSummaryScreenState extends State<WriteSummaryScreen> {
                        color: Colors.teal,
                        borderRadius: BorderRadius.circular(10),
                      ),
+                      child: Image.memory(
+                        base64Decode(widget.image),
+                        fit: BoxFit.cover,
+                        //fit: BoxFit.fill,
+                      ),
                     ),
                     SizedBox(width: 20,),
                     Column(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                     crossAxisAlignment: CrossAxisAlignment.start,
                      // mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        TextWidget("Book Name : ", 18, Colors.black),
+                        TextWidget("Book Name : ${widget.book} ", 18, Colors.black),
                         const SizedBox(height: 5,),
-                        TextWidget("Book Name : Book 1 ", 18, Colors.black),
+                        TextWidget("Category Name: ${widget.category} ", 18, Colors.black),
                         const SizedBox(height: 5,),
-                        TextWidget("Book Name : Book 1 ", 18, Colors.black),
+                        TextWidget("Author Name : ${widget.author} ", 18, Colors.black),
                         const SizedBox(height: 5,),
-                        TextWidget("Book Name : Book 1 ", 18, Colors.black),
+                        TextWidget("Summary writer: XYZ", 18, Colors.black),
+
                       ],
                     )
                   ],
@@ -72,6 +84,22 @@ class _WriteSummaryScreenState extends State<WriteSummaryScreen> {
                   decoration: BoxDecoration(
                     color: Colors.teal,
                     borderRadius: BorderRadius.circular(10),
+                  ),
+                  child:  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+                    child: TextFormField(
+                      controller: _summaryController,
+                      decoration:  InputDecoration(
+                          hintText: "Write Summary for Book ${widget.book}",
+                          border:InputBorder.none,
+                          hintStyle: const TextStyle(
+                            color: Colors.white,
+                            fontSize: 18,
+                            fontWeight: FontWeight.w600,
+                          )
+                      ),
+
+                    ),
                   ),
                 ),
                 SizedBox(height: 20,),
@@ -90,7 +118,7 @@ class _WriteSummaryScreenState extends State<WriteSummaryScreen> {
                         ),
                         child: const Center(
                           child: Text(
-                            "Save",
+                            "Draft",
                             style: TextStyle(
                               color: Colors.white,
                               fontSize: 12,
@@ -113,7 +141,7 @@ class _WriteSummaryScreenState extends State<WriteSummaryScreen> {
                         ),
                         child: const Center(
                           child: Text(
-                            "Draft",
+                            "Submit",
                             style: TextStyle(
                               color: Colors.white,
                               fontSize: 12,

@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:blink_book_community/Screens/Writer/draft_screen.dart';
 import 'package:blink_book_community/Screens/Writer/write_summary.dart';
 import 'package:blink_book_community/main.dart';
 import 'package:flutter/material.dart';
@@ -26,18 +27,57 @@ class _WriterScreenState extends State<WriterScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
-      appBar: AppBar(
-        leading: const Icon(Icons.menu),
-        title: const Text('Writer Screen'),
-        actions: const [
-          Icon(Icons.favorite),
-          Padding(
-            padding: EdgeInsets.symmetric(horizontal: 16),
-            child: Icon(Icons.search),
-          ),
-          Icon(Icons.more_vert),
-        ],
-        backgroundColor: Colors.purple,
+      appBar: PreferredSize(
+        preferredSize: Size.fromHeight(50.0),
+        child: AppBar(
+          automaticallyImplyLeading: false,
+          // actions: <Widget>[
+          //   IconButton(
+          //     onPressed: () {
+          //       updateAttendance();
+          //     },
+          //     icon: Icon(
+          //       Icons.refresh,
+          //       size: 35.0,
+          //     ),
+          //   ),
+          // ],
+          actions: [
+
+            PopupMenuButton<String>(onSelected: (value) {
+
+            }, itemBuilder: (BuildContext context) {
+              return [
+                PopupMenuItem(
+                  child: Row(
+                    children: [
+                      IconButton(
+                        icon: const Icon(
+                          Icons.drafts,
+                          color: Colors.purple,
+                        ),
+                        onPressed: () async {
+                          Navigator.push(context, MaterialPageRoute(builder: (context)=>DraftScreen()));
+                        },
+                      ),
+                      const SizedBox(
+                        width: 10.0,
+                      ),
+                      const Text(
+                        "Drafts",
+                        style: TextStyle(fontWeight: FontWeight.w500),
+                      )
+                    ],
+                  ),
+                 // value: "notifications",
+                ),
+              ];
+            }),
+          ],
+          title: Text("Writer Screen"),
+          centerTitle: false,
+          backgroundColor: Colors.purple,
+        ),
       ),
       body:BookList==null?
       loading() :
