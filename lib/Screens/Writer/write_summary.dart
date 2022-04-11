@@ -1,7 +1,10 @@
 import 'dart:convert';
-
 import 'package:blink_book_community/Widgets/text_widget.dart';
+import 'package:blink_book_community/main.dart';
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
+
+import '../../Widgets/snackbar_widget.dart';
 
 class WriteSummaryScreen extends StatefulWidget {
   final String book;
@@ -108,6 +111,7 @@ class _WriteSummaryScreenState extends State<WriteSummaryScreen> {
                   children: [
                  GestureDetector(
                       onTap:() async{
+                        postDraft();
                       } ,
                       child: Container(
                         height: 40,
@@ -160,5 +164,30 @@ class _WriteSummaryScreenState extends State<WriteSummaryScreen> {
         ],
       ),
     );
+  }
+
+
+  postDraft() async
+  {
+    String url="http://${ip}/BlinkBookApi/api/Summary/addSummaryforDarft";
+    var data= {
+      "book":widget.book,
+      "author":widget.author,
+      "category":widget.category,
+      "summary1":_summaryController.text,
+      "image":widget.image,
+      "status":"0",
+      "uid":"1"
+    };
+    var respose=await http.post(Uri.parse(url), body: data);
+    if(respose.statusCode==200)
+      {
+        SnackBarWidget(context, "Summary saved in draft","Ok");
+      }
+    else
+      {
+        SnackBarWidget(context, "Something Went Wrong","Ok");
+        print(respose.body);
+      }
   }
 }
