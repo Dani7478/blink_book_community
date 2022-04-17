@@ -14,9 +14,13 @@ class AddBookScreen extends StatefulWidget {
   _AddBookScreenState createState() => _AddBookScreenState();
 }
 
+int countTxtField = 1;
+
 class _AddBookScreenState extends State<AddBookScreen> {
   final TextEditingController _bookNameCntrl = TextEditingController();
   final TextEditingController _authorNameCntrl = TextEditingController();
+  final TextEditingController _authorNameCntr2 = TextEditingController();
+  final TextEditingController _authorNameCntr3 = TextEditingController();
 
   File? imageFile;
   String? imageData;
@@ -159,16 +163,33 @@ class _AddBookScreenState extends State<AddBookScreen> {
                 borderRadius: BorderRadius.circular(8),
               ),
               child: Padding(
-                padding: const EdgeInsets.only(left: 8),
+                padding: const EdgeInsets.only(left: 8, right: 12),
                 child: TextFormField(
                   controller: _authorNameCntrl,
-                  decoration: const InputDecoration(
-                      hintText: "Enter Author Name",
+                  decoration: InputDecoration(
+                      hintText: "Enter Author Name 1",
                       border: InputBorder.none,
                       prefixIcon: Icon(
                         Icons.person,
                         color: Colors.white,
                       ),
+                      suffix: countTxtField == 1
+                          ? GestureDetector(
+                              onTap: () {
+                                countTxtField = countTxtField + 1;
+                                setState(() {});
+                              },
+                              child: Icon(
+                                Icons.add,
+                                // size: 100,
+                                color: Colors.white,
+                              ),
+                            )
+                          : Icon(
+                              Icons.add,
+                              // size: 100,
+                              color: Colors.redAccent,
+                            ),
                       hintStyle: TextStyle(
                         fontSize: 18,
                         fontWeight: FontWeight.w600,
@@ -177,6 +198,91 @@ class _AddBookScreenState extends State<AddBookScreen> {
                 ),
               ),
             ),
+            countTxtField >= 2
+                ? SizedBox(
+                    height: 20,
+                  )
+                : SizedBox(
+                    height: 0,
+                  ),
+            countTxtField >= 2
+                ? Container(
+                    height: 50,
+                    width: double.infinity,
+                    decoration: BoxDecoration(
+                      color: Colors.redAccent,
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    child: Padding(
+                      padding: const EdgeInsets.only(left: 8, right: 12),
+                      child: TextFormField(
+                        controller: _authorNameCntr2,
+                        decoration: InputDecoration(
+                            hintText: "Enter Author Name 2",
+                            border: InputBorder.none,
+                            prefixIcon: Icon(
+                              Icons.person,
+                              color: Colors.white,
+                            ),
+                            suffix: countTxtField == 2
+                                ? GestureDetector(
+                                    onTap: () {
+                                      countTxtField = countTxtField + 1;
+                                      setState(() {});
+                                    },
+                                    child: Icon(
+                                      Icons.add,
+                                      // size: 100,
+                                      color: Colors.white,
+                                    ),
+                                  )
+                                : Icon(Icons.add,
+                                    // size: 100,
+                                    color: Colors.redAccent),
+                            hintStyle: TextStyle(
+                              fontSize: 18,
+                              fontWeight: FontWeight.w600,
+                              color: Colors.white,
+                            )),
+                      ),
+                    ),
+                  )
+                : Container(),
+            countTxtField >= 3
+                ? SizedBox(
+                    height: 20,
+                  )
+                : SizedBox(
+                    height: 0,
+                  ),
+            countTxtField >= 3
+                ? Container(
+                    height: 50,
+                    width: double.infinity,
+                    decoration: BoxDecoration(
+                      color: Colors.redAccent,
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    child: Padding(
+                      padding: const EdgeInsets.only(left: 8, right: 12),
+                      child: TextFormField(
+                        controller: _authorNameCntr3,
+                        decoration: InputDecoration(
+                            hintText: "Enter Author Name 3",
+                            border: InputBorder.none,
+                            prefixIcon: Icon(
+                              Icons.person,
+                              color: Colors.white,
+                            ),
+                            hintStyle: TextStyle(
+                              fontSize: 18,
+                              fontWeight: FontWeight.w600,
+                              color: Colors.white,
+                            )),
+                      ),
+                    ),
+                  )
+                : Container(),
             const SizedBox(
               height: 15,
             ),
@@ -289,18 +395,25 @@ class _AddBookScreenState extends State<AddBookScreen> {
 
   //________________________FOR SAVE BOOK
   postData() async {
+    List<String> contrlrList = [
+      _authorNameCntrl.text,
+      _authorNameCntr2.text,
+      _authorNameCntr3.text
+    ];
     String address = "http://192.168.43.45/BlinkBookApi/api/book/addBook";
-    var data = {
-      "category": _selectCategory,
-      "book1": _bookNameCntrl.text,
-      "author": _authorNameCntrl.text,
-      "image": imageData
-    };
-    var response = await http.post(Uri.parse(address), body: data);
-    if (response.statusCode == 200) {
-      SnackBarWidget(context, "Your Book is Added", "Ok");
-    } else {
-      SnackBarWidget(context, "Something went Wrong", "Ok");
+    for (int i = 0; i < countTxtField; i++) {
+      var data = {
+        "category": _selectCategory,
+        "book1": _bookNameCntrl.text,
+        "author": contrlrList[i],
+        "image": imageData
+      };
+      var response = await http.post(Uri.parse(address), body: data);
+      if (response.statusCode == 200) {
+        SnackBarWidget(context, "Your Book is Added", "Ok");
+      } else {
+        SnackBarWidget(context, "Something went Wrong", "Ok");
+      }
     }
   }
 

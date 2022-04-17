@@ -1,8 +1,10 @@
 import 'dart:convert';
+import 'package:blink_book_community/Function/get_user_id.dart';
 import 'package:blink_book_community/Widgets/text_widget.dart';
 import 'package:blink_book_community/main.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+//import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../Widgets/snackbar_widget.dart';
 
@@ -20,8 +22,14 @@ class WriteSummaryScreen extends StatefulWidget {
 }
 
 class _WriteSummaryScreenState extends State<WriteSummaryScreen> {
+  final TextEditingController _summaryController = new TextEditingController();
 
-  final TextEditingController _summaryController=new TextEditingController();
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    GetId();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -45,42 +53,54 @@ class _WriteSummaryScreenState extends State<WriteSummaryScreen> {
           Padding(
             padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 20),
             child: Column(
-             // mainAxisAlignment: MainAxisAlignment.center,
+              // mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Row(
                   children: [
                     Container(
                       height: 100,
                       width: 80,
-                     decoration: BoxDecoration(
-                       color: Colors.teal,
-                       borderRadius: BorderRadius.circular(10),
-                     ),
+                      decoration: BoxDecoration(
+                        color: Colors.teal,
+                        borderRadius: BorderRadius.circular(10),
+                      ),
                       child: Image.memory(
                         base64Decode(widget.image),
                         fit: BoxFit.cover,
                         //fit: BoxFit.fill,
                       ),
                     ),
-                    SizedBox(width: 20,),
+                    SizedBox(
+                      width: 20,
+                    ),
                     Column(
                       mainAxisAlignment: MainAxisAlignment.start,
-                     crossAxisAlignment: CrossAxisAlignment.start,
-                     // mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      // mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        TextWidget("Book Name : ${widget.book} ", 18, Colors.black),
-                        const SizedBox(height: 5,),
-                        TextWidget("Category Name: ${widget.category} ", 18, Colors.black),
-                        const SizedBox(height: 5,),
-                        TextWidget("Author Name : ${widget.author} ", 18, Colors.black),
-                        const SizedBox(height: 5,),
+                        TextWidget(
+                            "Book Name : ${widget.book} ", 18, Colors.black),
+                        const SizedBox(
+                          height: 5,
+                        ),
+                        TextWidget("Category Name: ${widget.category} ", 18,
+                            Colors.black),
+                        const SizedBox(
+                          height: 5,
+                        ),
+                        TextWidget("Author Name : ${widget.author} ", 18,
+                            Colors.black),
+                        const SizedBox(
+                          height: 5,
+                        ),
                         TextWidget("Summary writer: XYZ", 18, Colors.black),
-
                       ],
                     )
                   ],
                 ),
-                SizedBox(height: 20,),
+                SizedBox(
+                  height: 20,
+                ),
                 Container(
                   height: 280,
                   width: double.infinity,
@@ -88,31 +108,32 @@ class _WriteSummaryScreenState extends State<WriteSummaryScreen> {
                     color: Colors.teal,
                     borderRadius: BorderRadius.circular(10),
                   ),
-                  child:  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 10, vertical: 10),
                     child: TextFormField(
                       controller: _summaryController,
-                      decoration:  InputDecoration(
+                      decoration: InputDecoration(
                           hintText: "Write Summary for Book ${widget.book}",
-                          border:InputBorder.none,
+                          border: InputBorder.none,
                           hintStyle: const TextStyle(
                             color: Colors.white,
                             fontSize: 18,
                             fontWeight: FontWeight.w600,
-                          )
-                      ),
-
+                          )),
                     ),
                   ),
                 ),
-                SizedBox(height: 20,),
+                SizedBox(
+                  height: 20,
+                ),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                 GestureDetector(
-                      onTap:() async{
+                    GestureDetector(
+                      onTap: () async {
                         postDraft();
-                      } ,
+                      },
                       child: Container(
                         height: 40,
                         width: 100,
@@ -132,10 +153,11 @@ class _WriteSummaryScreenState extends State<WriteSummaryScreen> {
                         ),
                       ),
                     ),
-                    SizedBox(width: 20,),
+                    SizedBox(
+                      width: 20,
+                    ),
                     GestureDetector(
-                      onTap:() async{
-                      } ,
+                      onTap: () async {},
                       child: Container(
                         height: 40,
                         width: 100,
@@ -157,7 +179,6 @@ class _WriteSummaryScreenState extends State<WriteSummaryScreen> {
                     ),
                   ],
                 )
-
               ],
             ),
           )
@@ -166,28 +187,35 @@ class _WriteSummaryScreenState extends State<WriteSummaryScreen> {
     );
   }
 
-
-  postDraft() async
-  {
-    String url="http://${ip}/BlinkBookApi/api/Summary/addSummaryforDarft";
-    var data= {
-      "book":widget.book,
-      "author":widget.author,
-      "category":widget.category,
-      "summary1":_summaryController.text,
-      "image":widget.image,
-      "status":"0",
-      "uid":"1"
+  postDraft() async {
+    String url = "http://${ip}/BlinkBookApi/api/Summary/addSummaryforDarft";
+    var data = {
+      "book": widget.book,
+      "author": widget.author,
+      "category": widget.category,
+      "summary1": _summaryController.text,
+      "image": widget.image,
+      "status": "0",
+      "uid": "2"
     };
-    var respose=await http.post(Uri.parse(url), body: data);
-    if(respose.statusCode==200)
-      {
-        SnackBarWidget(context, "Summary saved in draft","Ok");
-      }
-    else
-      {
-        SnackBarWidget(context, "Something Went Wrong","Ok");
-        print(respose.body);
-      }
+    var respose = await http.post(Uri.parse(url), body: data);
+    if (respose.statusCode == 200) {
+      SnackBarWidget(context, "Summary saved in draft", "Ok");
+    } else {
+      SnackBarWidget(context, "Something Went Wrong", "Ok");
+      print(respose.body);
+    }
+  }
+
+  GetId() async {
+    // Obtain shared preferences.
+    //final prefs = await SharedPreferences.getInstance();
+    // Try reading data from the 'counter' key. If it doesn't exist, returns null.
+    // final int? id = prefs.getInt('userid');
+    // if (id != null) {
+    //   print("id===== ${id}");
+    // } else {
+    //   print("id===== null");
+    // }
   }
 }
