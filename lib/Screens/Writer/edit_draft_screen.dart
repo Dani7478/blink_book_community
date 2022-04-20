@@ -1,31 +1,31 @@
 import 'dart:convert';
-import 'package:blink_book_community/Function/get_user_id.dart';
-import 'package:blink_book_community/Widgets/text_widget.dart';
-import 'package:blink_book_community/main.dart';
+
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
-//import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../Widgets/snackbar_widget.dart';
+import '../../Widgets/text_widget.dart';
+import 'package:http/http.dart' as http;
 
-class WriteSummaryScreen extends StatefulWidget {
+import '../../main.dart';
+
+class EditDraftScreen extends StatefulWidget {
+
   final String book;
   final String author;
   final String category;
   final String image;
-  const WriteSummaryScreen(this.book, this.author, this.category, this.image);
-
-  //const WriteSummaryScreen({Key? key}) : super(key: key);
+  final String summary;
+  const EditDraftScreen(this.book, this.author, this.category, this.image, this.summary);
+ // const EditDraftScreen({Key? key}) : super(key: key);
 
   @override
-  _WriteSummaryScreenState createState() => _WriteSummaryScreenState();
+  _EditDraftScreenState createState() => _EditDraftScreenState();
 }
 
-int id=0;
-
-class _WriteSummaryScreenState extends State<WriteSummaryScreen> {
-  final TextEditingController _summaryController = new TextEditingController();
+int? id;
+class _EditDraftScreenState extends State<EditDraftScreen> {
+  late TextEditingController _summaryController;
 
   @override
   void initState() {
@@ -33,14 +33,14 @@ class _WriteSummaryScreenState extends State<WriteSummaryScreen> {
     super.initState();
     GetId();
   }
-
   @override
   Widget build(BuildContext context) {
+    _summaryController=new TextEditingController(text: widget.summary);
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
         leading: const Icon(Icons.menu),
-        title: const Text('Write Summary'),
+        title: const Text('Edit Draft'),
         actions: const [
           Icon(Icons.favorite),
           Padding(
@@ -135,7 +135,8 @@ class _WriteSummaryScreenState extends State<WriteSummaryScreen> {
                   children: [
                     GestureDetector(
                       onTap: () async {
-                        postDraft();
+                      //  postDraft();
+                        updateDraft();
                       },
                       child: Container(
                         height: 40,
@@ -146,7 +147,7 @@ class _WriteSummaryScreenState extends State<WriteSummaryScreen> {
                         ),
                         child: const Center(
                           child: Text(
-                            "Draft",
+                            "Update",
                             style: TextStyle(
                               color: Colors.white,
                               fontSize: 12,
@@ -161,7 +162,7 @@ class _WriteSummaryScreenState extends State<WriteSummaryScreen> {
                     ),
                     GestureDetector(
                       onTap: () async {
-                      await postSummary();
+                        await postSummary();
 
                       },
                       child: Container(
@@ -193,8 +194,9 @@ class _WriteSummaryScreenState extends State<WriteSummaryScreen> {
     );
   }
 
-  postDraft() async {
-    String url = "http://${ip}/BlinkBookApi/api/Summary/addSummaryforDarft";
+
+  updateDraft() async {
+    String url = "http://${ip}/BlinkBookApi/api/Summary/UpdateDraftToSummary";
     var data = {
       "book": widget.book,
       "author": widget.author,
@@ -206,7 +208,7 @@ class _WriteSummaryScreenState extends State<WriteSummaryScreen> {
     };
     var respose = await http.post(Uri.parse(url), body: data);
     if (respose.statusCode == 200) {
-      SnackBarWidget(context, "Summary saved in draft", "Ok");
+      SnackBarWidget(context, "Summary Draft is Successfully update", "Ok");
     } else {
       SnackBarWidget(context, "Something Went Wrong", "Ok");
       print(respose.body);
@@ -214,7 +216,7 @@ class _WriteSummaryScreenState extends State<WriteSummaryScreen> {
   }
 
   postSummary() async {
-    String url = "http://${ip}/BlinkBookApi/api/Summary/addSummaryforDarft";
+    String url = "http://${ip}/BlinkBookApi/api/Summary/UpdateDraftToSummary";
     var data = {
       "book": widget.book,
       "author": widget.author,
@@ -234,10 +236,10 @@ class _WriteSummaryScreenState extends State<WriteSummaryScreen> {
   }
 
   GetId() async {
-   // Obtain shared preferences.
+    // Obtain shared preferences.
     final prefs = await SharedPreferences.getInstance();
-   // Try reading data from the 'counter' key. If it doesn't exist, returns null.
-        id = prefs.getInt('userid')!;
+    // Try reading data from the 'counter' key. If it doesn't exist, returns null.
+    id = prefs.getInt('userid')!;
     if (id != null) {
       print("id===== ${id}");
     } else {

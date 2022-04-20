@@ -3,8 +3,11 @@ import 'package:blink_book_community/Screens/Admin/admin_screen.dart';
 import 'package:blink_book_community/Screens/Reader/reader_screen.dart';
 import 'package:blink_book_community/Screens/signup_screen.dart';
 import 'package:blink_book_community/Screens/Writer/writer_screen.dart';
+import 'package:blink_book_community/main.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:shared_preferences/shared_preferences.dart';
+
 //import 'package:shared_preferences/shared_preferences.dart';
 
 class SignInScreen extends StatefulWidget {
@@ -13,6 +16,8 @@ class SignInScreen extends StatefulWidget {
   @override
   _SignInScreenState createState() => _SignInScreenState();
 }
+
+int userid=0;
 
 class _SignInScreenState extends State<SignInScreen> {
   TextEditingController _emailcontroler = TextEditingController();
@@ -107,7 +112,7 @@ class _SignInScreenState extends State<SignInScreen> {
         String password = _passwordcontroler.text;
 
         String address =
-            "http://192.168.43.45/BlinkBookApi/api/user/checkuser?email=$email&password=$password";
+            "http://${ip}/BlinkBookApi/api/user/checkuser?email=$email&password=$password";
         var response = await http.get(Uri.parse(address));
         if (response.statusCode == 200) {
           resultList = json.decode(response.body);
@@ -117,7 +122,8 @@ class _SignInScreenState extends State<SignInScreen> {
             print("Email or Password are Wrong");
           }
           if (countList == 1) {
-            //await prefs.setInt('userid', resultList![1]["id"]);
+            final prefs = await SharedPreferences.getInstance();
+            await prefs.setInt('userid', resultList![0]["id"]);
             String? role = resultList?[0]["role"].toString();
             print("$role");
             if (role?.toLowerCase() == "admin") {
@@ -167,4 +173,6 @@ class _SignInScreenState extends State<SignInScreen> {
       ),
     );
   }
+
+
 }
