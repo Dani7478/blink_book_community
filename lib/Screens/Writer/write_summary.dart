@@ -115,7 +115,12 @@ class _WriteSummaryScreenState extends State<WriteSummaryScreen> {
                     padding: const EdgeInsets.symmetric(
                         horizontal: 10, vertical: 10),
                     child: TextFormField(
+                      keyboardType: TextInputType.multiline,
+                      enableIMEPersonalizedLearning: true,
                       controller: _summaryController,
+                        expands: true, 
+                          maxLines: null,
+
                       decoration: InputDecoration(
                           hintText: "Write Summary for Book ${widget.book}",
                           border: InputBorder.none,

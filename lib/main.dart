@@ -7,6 +7,8 @@ import 'package:blink_book_community/Screens/welcome_screen.dart';
 import 'package:flutter/material.dart';
 import 'Screens/Admin/delete_book.dart';
 import 'Screens/Admin/delete_books.dart';
+import 'Screens/Editor/editor_correction.dart';
+import 'Screens/Editor/editor_screen.dart';
 import 'Screens/Writer/draft_screen.dart';
 import 'Screens/signin_screen.dart';
 import 'Screens/test_screen.dart';
@@ -30,7 +32,8 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: SignInScreen(),
+      home: EditorScreen(),
+      
     );
   }
 }
