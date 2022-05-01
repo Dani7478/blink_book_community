@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:blink_book_community/Screens/Writer/draft_screen.dart';
+import 'package:blink_book_community/Screens/Writer/show_summary_detail.dart';
 import 'package:blink_book_community/Screens/Writer/write_summary.dart';
 import 'package:blink_book_community/main.dart';
 import 'package:flutter/material.dart';
@@ -70,6 +71,32 @@ class _WriterScreenState extends State<WriterScreen> {
                             ),
                             const Text(
                               "Drafts",
+                              style: TextStyle(fontWeight: FontWeight.w500),
+                            )
+                          ],
+                        ),
+                        // value: "notifications",
+                      ),
+                      PopupMenuItem(
+                        child: Row(
+                          children: [
+                            IconButton(
+                              icon: const Icon(
+                                Icons.summarize,
+                                color: Colors.purple,
+                              ),
+                              onPressed: () async {
+                                Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) => ShowSummaryDetailScreen()));
+                              },
+                            ),
+                            const SizedBox(
+                              width: 10.0,
+                            ),
+                            const Text(
+                              "Summary Detail",
                               style: TextStyle(fontWeight: FontWeight.w500),
                             )
                           ],

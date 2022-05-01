@@ -258,7 +258,7 @@ class _EditorCorrectionScreenState extends State<EditorCorrectionScreen> {
           await updateUserSummaryStatus('reject');
         },
         child: Column(
-          children: [
+          children: const [
             Icon(
               Icons.cancel,
               size: 20,

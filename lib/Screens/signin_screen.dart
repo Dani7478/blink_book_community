@@ -3,6 +3,7 @@ import 'package:blink_book_community/Screens/Admin/admin_screen.dart';
 import 'package:blink_book_community/Screens/Reader/reader_screen.dart';
 import 'package:blink_book_community/Screens/signup_screen.dart';
 import 'package:blink_book_community/Screens/Writer/writer_screen.dart';
+import 'package:blink_book_community/Widgets/snackbar_widget.dart';
 import 'package:blink_book_community/main.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
@@ -26,33 +27,53 @@ class _SignInScreenState extends State<SignInScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text(
-          "SIGNIN",
-          style: TextStyle(
-            fontSize: 24,
-            fontWeight: FontWeight.bold,
-          ),
-        ),
-      ),
+       resizeToAvoidBottomInset: false,
+      // appBar: AppBar(
+      //   title: const Text(
+      //     "SIGNIN",
+      //     style: TextStyle(
+      //       fontSize: 24,
+      //       fontWeight: FontWeight.bold,
+      //     ),
+      //   ),
+      // ),
       body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            emailPortion(),
-            SizedBox(
-              height: 30,
-            ),
-            passwordPortion(),
-            SizedBox(
-              height: 30,
-            ),
-            loginBtn(),
-            SizedBox(
-              height: 15,
-            ),
-            simpleText(),
-          ],
+        child: Padding(
+          padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 20),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Expanded(
+              flex: 1,
+                child: Center(child: Text("Login",
+                style: TextStyle(
+                  fontSize: 24,
+                  fontWeight: FontWeight.w500,
+                ),
+                )),
+              ),
+              Expanded(
+                flex: 2,
+                child: Column(
+                children: [
+                  emailPortion(),
+              SizedBox(
+                height: 30,
+              ),
+              passwordPortion(),
+              SizedBox(
+                height: 30,
+              ),
+              loginBtn(),
+              SizedBox(
+                height: 15,
+              ),
+              simpleText(),
+                ],
+              )),
+              
+            ],
+          ),
         ),
       ),
     );
@@ -61,8 +82,12 @@ class _SignInScreenState extends State<SignInScreen> {
   emailPortion() {
     return Container(
       height: 55,
-      width: 250,
-      color: Colors.grey,
+      width: MediaQuery.of(context).size.width, 
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(10),
+        color: Colors.grey,
+        border: Border.all(color: Colors.teal)
+      ),
       child: Padding(
         padding: const EdgeInsets.only(left: 8),
         child: TextFormField(
@@ -83,8 +108,12 @@ class _SignInScreenState extends State<SignInScreen> {
   passwordPortion() {
     return Container(
       height: 55,
-      width: 250,
-      color: Colors.grey,
+      width: MediaQuery.of(context).size.width, 
+        decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(10),
+        color: Colors.grey,
+        border: Border.all(color: Colors.teal)
+      ),
       child: Padding(
         padding: const EdgeInsets.only(left: 8),
         child: TextFormField(
@@ -120,12 +149,14 @@ class _SignInScreenState extends State<SignInScreen> {
           int? countList = resultList?.length;
           if (countList == 0) {
             print("Email or Password are Wrong");
+            SnackBarWidget(context, "Email or Password are Wrong", "OK");
           }
           if (countList == 1) {
             final prefs = await SharedPreferences.getInstance();
             await prefs.setInt('userid', resultList![0]["id"]);
             String? role = resultList?[0]["role"].toString();
             print("$role");
+             SnackBarWidget(context, "${resultList?[0]["fname"]} is Successfully Login", "OK");
             if (role?.toLowerCase() == "admin") {
               Navigator.push(context,
                   MaterialPageRoute(builder: (context) => AdminScreen()));
@@ -139,12 +170,16 @@ class _SignInScreenState extends State<SignInScreen> {
           }
         } else {
           print("Something went Wrong");
+           SnackBarWidget(context, "Something Went Wrong", "OK");
         }
       },
       child: Container(
         height: 50,
-        width: 150,
-        color: Colors.greenAccent,
+        width: MediaQuery.of(context).size.width, 
+       decoration: BoxDecoration(
+         color: Colors.teal,
+         borderRadius: BorderRadius.circular(5),
+       ),
         child: const Center(
           child: Text(
             "Signin",

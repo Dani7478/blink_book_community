@@ -1,3 +1,4 @@
+import 'package:blink_book_community/Widgets/snackbar_widget.dart';
 import 'package:blink_book_community/main.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
@@ -5,6 +6,8 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 
 import 'package:shared_preferences/shared_preferences.dart';
+
+import 'modify_summary.dart';
 
 class ShowSummaryDetailScreen extends StatefulWidget {
   const ShowSummaryDetailScreen({Key? key}) : super(key: key);
@@ -101,7 +104,7 @@ class _ShowSummaryDetailScreenState extends State<ShowSummaryDetailScreen> {
                   ];
                 }),
           ],
-          title: const Text("Editor Screen"),
+          title: const Text("All Summries Detail"),
           centerTitle: false,
           backgroundColor: Colors.purple,
         ),
@@ -231,8 +234,8 @@ class _ShowSummaryDetailScreenState extends State<ShowSummaryDetailScreen> {
                         trailing:showStatus( SummaryList![index]['status']),
                       
                       ),
-                      SizedBox(height:5),
-                       _ButtonRow()
+                        const SizedBox(height:5),
+                       _ButtonRow(SummaryList![index]['id'], SummaryList![index]['summary1']),
                     
                     ],
                   ),
@@ -307,7 +310,7 @@ class _ShowSummaryDetailScreenState extends State<ShowSummaryDetailScreen> {
                       );
   }
 
-  _ButtonRow() {
+  _ButtonRow(int id, String summary ) {
     return Row(
     mainAxisAlignment: MainAxisAlignment.spaceEvenly, 
       children: [
@@ -335,24 +338,33 @@ class _ShowSummaryDetailScreenState extends State<ShowSummaryDetailScreen> {
         onTap: () async{
 
         },
-        child: Column(
-          children: const [
-            Icon(
-              Icons.cancel,
-              size: 20,
-            ),
-            SizedBox(
-              height: 3,
-            ),
-            Text("Delete",
-                style: TextStyle(fontSize: 10, fontWeight: FontWeight.bold))
-          ],
+        child: MaterialButton(
+          onPressed:(){
+              deleteSummary(id);
+          },
+          child: Column(
+            children: const [
+              Icon(
+                Icons.cancel,
+                size: 20,
+              ),
+              SizedBox(
+                height: 3,
+              ),
+              Text("Delete",
+                  style: TextStyle(fontSize: 10, fontWeight: FontWeight.bold))
+            ],
+          ),
         ),
       ),
       //___________________Minor chnage
-      GestureDetector(
-        onTap: () async {
-        
+      MaterialButton(
+        onPressed: () async {
+          print("pressed");
+        String changes=await getCorrectionPara(id);
+  
+         Navigator.push(context,
+                  MaterialPageRoute(builder: (context) => ModifySummaryScreen(id,summary,changes)));
         },
         child: Column(
           children: const [
@@ -412,5 +424,41 @@ class _ShowSummaryDetailScreenState extends State<ShowSummaryDetailScreen> {
 
     
     ]);
+  }
+
+
+  deleteSummary(int bookid) async
+  {
+    String url='http://${ip}/BlinkBookApi/api/Summary/DeleteSummary?bookid=${bookid}';
+    var response=await http.get(Uri.parse(url));
+    if(response.statusCode==200)
+    {
+      print("Delete");
+      SnackBarWidget(context, "Summary is Delete Successfully", 'OK');
+      GetId();
+      setState(() {});
+    }
+    else 
+    {
+      print("not delete");
+       SnackBarWidget(context, "Something Went Wrong", 'OK');
+    }
+  }
+
+  
+  getCorrectionPara(int summaryid) async
+  {
+    String url=await 'http://${ip}/BlinkBookApi/api/Summary/getOnlyCorrection?summaryid=${summaryid}';
+    var response=await http.get(Uri.parse(url));
+    if(response.statusCode==200)
+    {
+      return json.decode(response.body);
+
+    }
+    else 
+    {
+      print("not delete");
+       SnackBarWidget(context, "Something Went Wrong", 'OK');
+    }
   }
 }
