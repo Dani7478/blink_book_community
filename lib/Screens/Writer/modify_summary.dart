@@ -31,15 +31,14 @@ int id = 0;
 
 class _ModifySummaryScreenState extends State<ModifySummaryScreen> {
   late TextEditingController _summaryController;
-
-  late TextEditingController _feedbackController;
+ //late TextEditingController _feedbackController;
 
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
     _summaryController = TextEditingController(text: widget.summary);
-    _feedbackController = TextEditingController(text: widget.changes);
+    //_feedbackController = TextEditingController(text: widget.changes);
     //getUserName();
   }
 

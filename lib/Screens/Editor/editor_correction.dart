@@ -159,15 +159,16 @@ class _EditorCorrectionScreenState extends State<EditorCorrectionScreen> {
   }
 
   postData(String type) async {
-    String url = "http://${ip}/BlinkBookApi/api/Editor/PostCorrection";
+    //String url = "http://${ip}/BlinkBookApi/api/Editor/PostCorrection";
     var data = {
       "summaryid": widget.summaryid.toString(),
       "userid": widget.userid.toString(),
-      "correctiontype": type.toString(),
-      "paragraph": _feedbackController.text.toString(),
+      "correctiontype": type,
+      "paragraph": _feedbackController.text
     };
-    var respose = await http.post(Uri.parse(url), body: data);
+    var respose = await http.post(Uri.parse("http://192.168.43.45/BlinkBookApi/api/Editor/PostCorrection"), body: data);
     if (respose.statusCode == 200) {
+       await updateUserSummaryStatus(type);
       SnackBarWidget(context, "FeedBack is Added", "Ok");
     } else {
       SnackBarWidget(context, "Something Went Wrong", "Ok");
@@ -192,9 +193,9 @@ class _EditorCorrectionScreenState extends State<EditorCorrectionScreen> {
 
     var respose = await http.get(Uri.parse(url));
     if (respose.statusCode == 200) {
-      SnackBarWidget(context, "Sumamry posted for ${type} ", "Ok");
+     // SnackBarWidget(context, "Sumamry posted for ${type} ", "Ok");
     } else {
-      SnackBarWidget(context, "Something Went Wrong", "Ok");
+     // SnackBarWidget(context, "Something Went Wrong", "Ok");
       print(respose.body);
     }
   }
@@ -235,7 +236,7 @@ class _EditorCorrectionScreenState extends State<EditorCorrectionScreen> {
       MaterialButton(
         onPressed: () async {
           await postData('accept');
-          await updateUserSummaryStatus('accept');
+         
         },
         child: Column(
           children: const [
@@ -255,7 +256,7 @@ class _EditorCorrectionScreenState extends State<EditorCorrectionScreen> {
       GestureDetector(
         onTap: () async{
           await postData('reject');
-          await updateUserSummaryStatus('reject');
+         // await updateUserSummaryStatus('reject');
         },
         child: Column(
           children: const [
@@ -276,7 +277,7 @@ class _EditorCorrectionScreenState extends State<EditorCorrectionScreen> {
       GestureDetector(
         onTap: () async {
           await postData('minor');
-          await updateUserSummaryStatus('minor');
+         // await updateUserSummaryStatus('minor');
         },
         child: Column(
           children: const [
@@ -297,7 +298,7 @@ class _EditorCorrectionScreenState extends State<EditorCorrectionScreen> {
       GestureDetector(
         onTap: () async {
           await postData('major');
-          await updateUserSummaryStatus('major');
+        //  await updateUserSummaryStatus('major');
         },
         child: Column(
           // ignore: prefer_const_literals_to_create_immutables

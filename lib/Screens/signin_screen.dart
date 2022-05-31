@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:blink_book_community/Screens/Admin/admin_screen.dart';
+import 'package:blink_book_community/Screens/Editor/editor_screen.dart';
 import 'package:blink_book_community/Screens/Reader/reader_screen.dart';
 import 'package:blink_book_community/Screens/signup_screen.dart';
 import 'package:blink_book_community/Screens/Writer/writer_screen.dart';
@@ -8,6 +9,8 @@ import 'package:blink_book_community/main.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
+
+import 'Publisher/publisher_screen.dart';
 
 //import 'package:shared_preferences/shared_preferences.dart';
 
@@ -165,6 +168,15 @@ class _SignInScreenState extends State<SignInScreen> {
               Navigator.push(context,
                   MaterialPageRoute(builder: (context) => WriterScreen()));
             }
+             if (role?.toLowerCase() == "editor") {
+              Navigator.push(context,
+                  MaterialPageRoute(builder: (context) => EditorScreen()));
+            }
+            if (role?.toLowerCase() == "publisher") {
+              Navigator.push(context,
+                  MaterialPageRoute(builder: (context) => PublisherScreen()));
+            }
+
 
             // Navigator.push(context, MaterialPageRoute(builder: (context)=>ReaderScreen()));
           }
