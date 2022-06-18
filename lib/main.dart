@@ -1,8 +1,11 @@
 import 'package:blink_book_community/Screens/Admin/admin_screen.dart';
 import 'package:blink_book_community/Screens/Admin/add_book.dart';
 import 'package:blink_book_community/Screens/Admin/category.dart';
+import 'package:blink_book_community/Screens/Reader/intrest_view.dart';
+import 'package:blink_book_community/Screens/Reader/navigation_view.dart';
 import 'package:blink_book_community/Screens/Reader/reader_screen.dart';
 import 'package:blink_book_community/Screens/Writer/writer_screen.dart';
+import 'package:blink_book_community/Screens/splash_screen.dart';
 import 'package:blink_book_community/Screens/welcome_screen.dart';
 import 'package:flutter/material.dart';
 import 'Screens/Admin/delete_book.dart';
@@ -32,8 +35,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home:const SignInScreen(),
-      
+      home: const SplashView(),
     );
   }
 }

@@ -51,18 +51,19 @@ class _SignupScreenState extends State<SignupScreen> {
           child: ListView(
             // mainAxisAlignment: MainAxisAlignment.center,
             children: [
-               Container(
+              Container(
                 height: 55,
                 width: 250,
-              
                 child: Padding(
                   padding: const EdgeInsets.only(left: 8),
-                  child: Center(child: Text("Registration",
-                style: TextStyle(
-                  fontSize: 24,
-                  fontWeight: FontWeight.w500,
-                ),
-                )),
+                  child: Center(
+                      child: Text(
+                    "Registration",
+                    style: TextStyle(
+                      fontSize: 24,
+                      fontWeight: FontWeight.w500,
+                    ),
+                  )),
                 ),
               ),
               SizedBox(
@@ -196,7 +197,7 @@ class _SignupScreenState extends State<SignupScreen> {
                   ),
                 ),
               ),
-              SizedBox(
+              const SizedBox(
                 height: 10,
               ),
               Container(
@@ -215,7 +216,7 @@ class _SignupScreenState extends State<SignupScreen> {
                           value: items,
                           child: Text(
                             items,
-                            style: TextStyle(
+                            style: const TextStyle(
                                 fontSize: 18, fontWeight: FontWeight.w600),
                           ));
                     }).toList(),

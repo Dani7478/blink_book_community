@@ -11,6 +11,7 @@ import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'Publisher/publisher_screen.dart';
+import 'Reader/intrest_view.dart';
 
 //import 'package:shared_preferences/shared_preferences.dart';
 
@@ -21,7 +22,7 @@ class SignInScreen extends StatefulWidget {
   _SignInScreenState createState() => _SignInScreenState();
 }
 
-int userid=0;
+int userid = 0;
 
 class _SignInScreenState extends State<SignInScreen> {
   TextEditingController _emailcontroler = TextEditingController();
@@ -30,7 +31,7 @@ class _SignInScreenState extends State<SignInScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-       resizeToAvoidBottomInset: false,
+      resizeToAvoidBottomInset: false,
       // appBar: AppBar(
       //   title: const Text(
       //     "SIGNIN",
@@ -47,34 +48,35 @@ class _SignInScreenState extends State<SignInScreen> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Expanded(
-              flex: 1,
-                child: Center(child: Text("Login",
-                style: TextStyle(
-                  fontSize: 24,
-                  fontWeight: FontWeight.w500,
-                ),
+                flex: 1,
+                child: Center(
+                    child: Text(
+                  "Login",
+                  style: TextStyle(
+                    fontSize: 24,
+                    fontWeight: FontWeight.w500,
+                  ),
                 )),
               ),
               Expanded(
-                flex: 2,
-                child: Column(
-                children: [
-                  emailPortion(),
-              SizedBox(
-                height: 30,
-              ),
-              passwordPortion(),
-              SizedBox(
-                height: 30,
-              ),
-              loginBtn(),
-              SizedBox(
-                height: 15,
-              ),
-              simpleText(),
-                ],
-              )),
-              
+                  flex: 2,
+                  child: Column(
+                    children: [
+                      emailPortion(),
+                      SizedBox(
+                        height: 30,
+                      ),
+                      passwordPortion(),
+                      SizedBox(
+                        height: 30,
+                      ),
+                      loginBtn(),
+                      SizedBox(
+                        height: 15,
+                      ),
+                      simpleText(),
+                    ],
+                  )),
             ],
           ),
         ),
@@ -85,12 +87,11 @@ class _SignInScreenState extends State<SignInScreen> {
   emailPortion() {
     return Container(
       height: 55,
-      width: MediaQuery.of(context).size.width, 
+      width: MediaQuery.of(context).size.width,
       decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(10),
-        color: Colors.grey,
-        border: Border.all(color: Colors.teal)
-      ),
+          borderRadius: BorderRadius.circular(10),
+          color: Colors.grey,
+          border: Border.all(color: Colors.teal)),
       child: Padding(
         padding: const EdgeInsets.only(left: 8),
         child: TextFormField(
@@ -111,12 +112,11 @@ class _SignInScreenState extends State<SignInScreen> {
   passwordPortion() {
     return Container(
       height: 55,
-      width: MediaQuery.of(context).size.width, 
-        decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(10),
-        color: Colors.grey,
-        border: Border.all(color: Colors.teal)
-      ),
+      width: MediaQuery.of(context).size.width,
+      decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(10),
+          color: Colors.grey,
+          border: Border.all(color: Colors.teal)),
       child: Padding(
         padding: const EdgeInsets.only(left: 8),
         child: TextFormField(
@@ -159,39 +159,49 @@ class _SignInScreenState extends State<SignInScreen> {
             await prefs.setInt('userid', resultList![0]["id"]);
             String? role = resultList?[0]["role"].toString();
             print("$role");
-             SnackBarWidget(context, "${resultList?[0]["fname"]} is Successfully Login", "OK");
+            SnackBarWidget(context,
+                "${resultList?[0]["fname"]} is Successfully Login", "OK");
             if (role?.toLowerCase() == "admin") {
               Navigator.push(context,
-                  MaterialPageRoute(builder: (context) => AdminScreen()));
+                  MaterialPageRoute(builder: (context) => const AdminScreen()));
             }
             if (role?.toLowerCase() == "writer") {
-              Navigator.push(context,
-                  MaterialPageRoute(builder: (context) => WriterScreen()));
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => const WriterScreen()));
             }
-             if (role?.toLowerCase() == "editor") {
-              Navigator.push(context,
-                  MaterialPageRoute(builder: (context) => EditorScreen()));
+            if (role?.toLowerCase() == "editor") {
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => const EditorScreen()));
             }
             if (role?.toLowerCase() == "publisher") {
-              Navigator.push(context,
-                  MaterialPageRoute(builder: (context) => PublisherScreen()));
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => const PublisherScreen()));
             }
-
+            if (role?.toLowerCase() == "reader") {
+              Navigator.push(context,
+                  MaterialPageRoute(builder: (context) => const IntrestView()));
+            }
 
             // Navigator.push(context, MaterialPageRoute(builder: (context)=>ReaderScreen()));
           }
         } else {
           print("Something went Wrong");
-           SnackBarWidget(context, "Something Went Wrong", "OK");
+          SnackBarWidget(context, "Something Went Wrong", "OK");
         }
       },
       child: Container(
         height: 50,
-        width: MediaQuery.of(context).size.width, 
-       decoration: BoxDecoration(
-         color: Colors.teal,
-         borderRadius: BorderRadius.circular(5),
-       ),
+        width: MediaQuery.of(context).size.width,
+        decoration: BoxDecoration(
+          color: Colors.teal,
+          borderRadius: BorderRadius.circular(5),
+        ),
         child: const Center(
           child: Text(
             "Signin",
@@ -220,6 +230,4 @@ class _SignInScreenState extends State<SignInScreen> {
       ),
     );
   }
-
-
 }
