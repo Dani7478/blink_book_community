@@ -7,125 +7,80 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
 import '../../main.dart';
 
-class ReaderSummaryView extends StatefulWidget {
-  const ReaderSummaryView({Key? key}) : super(key: key);
+class FavouriteSummriesView extends StatefulWidget {
+  const FavouriteSummriesView({Key? key}) : super(key: key);
 
   @override
-  State<ReaderSummaryView> createState() => _ReaderSummaryViewState();
+  State<FavouriteSummriesView> createState() => _FavouriteSummriesViewState();
 }
 
-String pakage = 'free';
-List intrestList=[];
-List listSummries=[];
-int summaryLength = 0;
+List listSummries = [];
+List allSummries = [];
 
-class _ReaderSummaryViewState extends State<ReaderSummaryView> {
+class _FavouriteSummriesViewState extends State<FavouriteSummriesView> {
   @override
   void initState() {
     super.initState();
-    getIntrest();
-    getPakage();
-    getAllSummarries();
-    getLength();
+    getListFavSummries();
   }
 
   @override
   void dispose() {
     super.dispose();
+     listSummries = [];
+     allSummries = [];
   }
 
-  getIntrest() async {
+  getListFavSummries() async {
     final prefs = await SharedPreferences.getInstance();
     int? userid = prefs.getInt('userid');
     String address =
-        "http://$ip/BlinkBookApi/api/Reader/getuserIntrest?userid=$userid";
-    var response = await http.get(Uri.parse(address));
-    if (response.statusCode == 200) {
-      List intrestList = json.decode(response.body);
-      setState(() {});
-      // ignore: avoid_print
-      //  print(intrestList);
-    }
-  }
-
-  getPakage() async {
-    final prefs = await SharedPreferences.getInstance();
-    int? userid = prefs.getInt('userid');
-    String address =
-        "http://$ip/BlinkBookApi/api/Reader/getUserPakage?userid=$userid";
-    var response = await http.get(Uri.parse(address));
-    if (response.statusCode == 200) {
-      pakage = json.decode(response.body);
-      setState(() {});
-      // ignore: avoid_print
-      print(pakage);
-    }
-  }
-
-  getAllSummarries() async {
-    String address = "http://$ip/BlinkBookApi/api/Reader/getAllPublishSummries";
+        "http://$ip/BlinkBookApi/api/Reader/getUserSummries?uid=$userid";
     var response = await http.get(Uri.parse(address));
     if (response.statusCode == 200) {
       listSummries = json.decode(response.body);
-      // ignore: avoid_print
-      print(listSummries);
-    }
-    setState(() {});
-  }
+      for (int i = 0; i < listSummries.length; i++) {
+        int sid = listSummries[i]['summarryid'];
+        String address2 =
+            "http://$ip/BlinkBookApi/api/Reader/getUserAllSummries?sid=$sid";
+        var response2 = await http.get(Uri.parse(address2));
+        print(response2.body);
+        allSummries.add(json.decode(response2.body));
+      }
 
-  getLength() {
-    if (pakage.toLowerCase() == 'free') {
-      summaryLength = 1;
+      setState(() {});
     }
-    if (pakage.toLowerCase() == 'basic') {
-      summaryLength = 5;
-    }
-    if (pakage.toLowerCase() == 'premium') {
-      summaryLength = 10;
-    }
-    if (pakage.toLowerCase() == 'platinium') {
-      summaryLength = 15;
-    }
-    if (listSummries.length < summaryLength) {
-      summaryLength = listSummries.length;
-    }
-    setState(() {});
-    print('summary Length : $summaryLength');
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(),
-      body: summaryLength == 0 || listSummries.length == 0
+      body: listSummries.length == 0
           ? loading()
           : Padding(
               padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
               child: ListView.builder(
-                  itemCount: summaryLength,
+                  itemCount: allSummries.length,
                   itemBuilder: (context, index) {
                     // ignore: avoid_print
                     print('index : $index');
-                    int summid = listSummries[index]['id'];
-                    String bookname = listSummries[index]['book'];
-                    String author = listSummries[index]['author'];
-                    String image = listSummries[index]['image'];
-                    String category = listSummries[index]['category'];
-                    String summary = listSummries[index]['summary1'];
-                    int userid = listSummries[index]['uid'];
-                    bool ishow=false;
-                    for(int i=0; i<intrestList.length; i++) {
+                    String bookname = allSummries[index]['book'];
+                    String author = allSummries[index]['author'];
+                    String image = allSummries[index]['image'];
+                    String category = allSummries[index]['category'];
+                    String summary = allSummries[index]['summary1'];
+                    int uid = allSummries[index]['uid'];
 
-                    }
-                    return summaryCard(summid,
-                        bookname, image, category, author, summary, userid);
+                    return summaryCard(
+                        bookname, image, category, author, summary,uid);
                   }),
             ),
     );
   }
 
-  summaryCard(int summid,String bookname, String image, String category, String author,
-      String summary, int userid) {
+  summaryCard(String bookname, String image, String category, String author,
+      String summary,int userid) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 5),
       child: Container(
@@ -175,14 +130,14 @@ class _ReaderSummaryViewState extends State<ReaderSummaryView> {
                         context,
                         MaterialPageRoute(
                             builder: (context) => ReaderSummaryDetailView(
-                                summid,
+                                1,
                                 bookname,
                                 author,
                                 category,
                                 image,
                                 summary,
                                 userid,
-                                 true
+                                false
                             )));
                   },
                   child: const Text('Read',

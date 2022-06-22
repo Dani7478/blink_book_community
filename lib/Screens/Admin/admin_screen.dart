@@ -60,7 +60,7 @@ class _AdminScreenState extends State<AdminScreen> {
                 ),
                 child:Row(
                   mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
+                  children:const [
                     Icon(Icons.book),
                     SizedBox(width: 20,),
                     Center(

@@ -19,9 +19,10 @@ class ReaderSummaryDetailView extends StatefulWidget {
   final String image;
   final String summary;
   final int userid;
+  final bool isShow;
 
   const ReaderSummaryDetailView(this.summaryid, this.book, this.author,
-      this.category, this.image, this.summary, this.userid);
+      this.category, this.image, this.summary, this.userid, this.isShow);
 
   //const WriteSummaryScreen({Key? key}) : super(key: key);
 
@@ -31,6 +32,7 @@ class ReaderSummaryDetailView extends StatefulWidget {
 }
 
 int id = 0;
+String user='Pending';
 
 class _ReaderSummaryDetailViewState extends State<ReaderSummaryDetailView> {
   late TextEditingController _summaryController;
@@ -41,10 +43,20 @@ class _ReaderSummaryDetailViewState extends State<ReaderSummaryDetailView> {
   void initState() {
     // TODO: implement initState
     super.initState();
+    getUserName();
     _summaryController = TextEditingController(text: widget.summary);
     //getUserName();
   }
-
+  getUserName() async {
+    int uid=widget.userid;
+    print(uid);
+    String address = "http://$ip/BlinkBookApi/api/Reader/getSummaryWriter?uid=$uid";
+    var response1 = await http.get(Uri.parse(address));
+    user=json.decode(response1.body).toString();
+    setState(() {
+      print(user);
+    });
+  }
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
@@ -108,7 +120,7 @@ class _ReaderSummaryDetailViewState extends State<ReaderSummaryDetailView> {
                         const SizedBox(
                           height: 5,
                         ),
-                        TextWidget("Summary writer: pending", 18, Colors.black),
+                        TextWidget("Summary writer: $user", 18, Colors.black),
                       ],
                     )
                   ],
@@ -153,7 +165,7 @@ class _ReaderSummaryDetailViewState extends State<ReaderSummaryDetailView> {
                 const SizedBox(
                   height: 20,
                 ),
-                _ButtonRow(widget.summaryid),
+             widget.isShow==true ? _ButtonRow(widget.summaryid) : Container(),
               ],
             ),
           )
@@ -168,38 +180,43 @@ class _ReaderSummaryDetailViewState extends State<ReaderSummaryDetailView> {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: <Widget>[
-          Row(
-            children: const [
-              Icon(
-                Icons.thumb_up,
-                color: Colors.black,
-              ),
-              SizedBox(
-                width: 5,
-              ),
-              Text('Like',
-                  style: TextStyle(
-                      fontSize: 14,
-                      fontWeight: FontWeight.w800,
-                      color: Colors.black)),
-            ],
+          InkWell(
+            onTap: (){
+              submitFavourite();
+            },
+            child: Row(
+              children: const [
+                Icon(
+                  Icons.favorite,
+                  color: Colors.black,
+                ),
+                SizedBox(
+                  width: 5,
+                ),
+                Text('Like',
+                    style: TextStyle(
+                        fontSize: 14,
+                        fontWeight: FontWeight.w800,
+                        color: Colors.black)),
+              ],
+            ),
           ),
-          Row(
-            children: const [
-              Icon(
-                Icons.comment,
-                color: Colors.black,
-              ),
-              SizedBox(
-                width: 5,
-              ),
-              Text('Comment',
-                  style: TextStyle(
-                      fontSize: 14,
-                      fontWeight: FontWeight.w800,
-                      color: Colors.black)),
-            ],
-          ),
+          // Row(
+          //   children: const [
+          //     Icon(
+          //       Icons.comment,
+          //       color: Colors.black,
+          //     ),
+          //     SizedBox(
+          //       width: 5,
+          //     ),
+          //     Text('Comment',
+          //         style: TextStyle(
+          //             fontSize: 14,
+          //             fontWeight: FontWeight.w800,
+          //             color: Colors.black)),
+          //   ],
+          // ),
           Row(
             children: const [
               Icon(
@@ -219,5 +236,18 @@ class _ReaderSummaryDetailViewState extends State<ReaderSummaryDetailView> {
         ],
       ),
     );
+  }
+  submitFavourite() async {
+    final prefs = await SharedPreferences.getInstance();
+    int? userid = prefs.getInt('userid');
+    String address =
+        "http://$ip/BlinkBookApi/api/Reader/postFavourite";
+    var data ={
+      'summarryid':widget.summaryid.toString(),
+      'uid':userid.toString(),
+    };
+    var result= await http.post(Uri.parse(address), body: data);
+    String msg=json.decode(result.body);
+    SnackBarWidget(context, msg, 'OK');
   }
 }

@@ -121,7 +121,7 @@ class _SignInScreenState extends State<SignInScreen> {
         padding: const EdgeInsets.only(left: 8),
         child: TextFormField(
           controller: _passwordcontroler,
-          decoration: InputDecoration(
+          decoration:const InputDecoration(
               hintText: "Enter Password",
               border: InputBorder.none,
               prefixIcon: Icon(Icons.lock),

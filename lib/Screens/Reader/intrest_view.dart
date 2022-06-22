@@ -13,33 +13,18 @@ class IntrestView extends StatefulWidget {
   State<IntrestView> createState() => _IntrestViewState();
 }
 
-List<String> intrestList = [
-  'Religion',
-  'Sports',
-  'Education',
-  'History',
-  'Science',
-  'Social',
-  'Health',
-  'Social',
-  'Novels',
-  'Islamic'
-];
-
-List<bool> listCheckBoxes = [
-  false,
-  false,
-  false,
-  false,
-  false,
-  false,
-  false,
-  false,
-  false,
-  false
-];
+List intrestList = [];
+List<bool> listCheckBoxes = [];
 
 class _IntrestViewState extends State<IntrestView> {
+
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    getCategories();
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -47,7 +32,7 @@ class _IntrestViewState extends State<IntrestView> {
         title: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            const Text('Please Select Your Intrest'),
+            const Text('Select Your Intrest'),
             Container(
               height: 40,
               width: 80,
@@ -87,7 +72,7 @@ class _IntrestViewState extends State<IntrestView> {
                           size: 30,
                         ),
                         title: Text(
-                          intrestList[index],
+                          intrestList[index]['cname'],
                           style: const TextStyle(
                               fontSize: 18, fontWeight: FontWeight.w800),
                         ),
@@ -107,15 +92,31 @@ class _IntrestViewState extends State<IntrestView> {
     );
   }
 
+  getCategories() async {
+    String address = "http://${ip}/BlinkBookApi/api/Category/getAllCategory";
+    var respons = await http.get(Uri.parse(address));
+    if (respons.statusCode == 200) {
+      intrestList = json.decode(respons.body);
+      for(int i=0; i< intrestList.length; i++) {
+        print('Index : $i');
+        listCheckBoxes.add(false);
+      }
+      setState(() {});
+    }
+  }
+
   postIntrests() async {
     String address = "http://$ip/BlinkBookApi/api/Reader/postIntrest";
     final prefs = await SharedPreferences.getInstance();
     int? userid = prefs.getInt('userid');
     for (int i = 0; i < listCheckBoxes.length; i++) {
       if (listCheckBoxes[i] == true) {
-        var data = {'intrest1': intrestList[i], 'uid': userid.toString()};
+        var data = {
+          'intrest1': intrestList[i]['cname'],
+          'uid': userid.toString(),
+        };
         var response = await http.post(Uri.parse(address), body: data);
-        // var message = json.decode(response.body);
+         print(response.toString());
       }
     }
     SnackBarWidget(context, 'Intrest Added Successfully', 'OK');
