@@ -1,22 +1,5 @@
-import 'package:blink_book_community/Screens/Admin/admin_screen.dart';
-import 'package:blink_book_community/Screens/Admin/add_book.dart';
-import 'package:blink_book_community/Screens/Admin/category.dart';
-import 'package:blink_book_community/Screens/Reader/intrest_view.dart';
-import 'package:blink_book_community/Screens/Reader/navigation_view.dart';
-import 'package:blink_book_community/Screens/Reader/reader_screen.dart';
-import 'package:blink_book_community/Screens/Writer/writer_screen.dart';
 import 'package:blink_book_community/Screens/splash_screen.dart';
-import 'package:blink_book_community/Screens/welcome_screen.dart';
 import 'package:flutter/material.dart';
-import 'Screens/Admin/delete_book.dart';
-import 'Screens/Admin/delete_books.dart';
-import 'Screens/Editor/editor_correction.dart';
-import 'Screens/Editor/editor_screen.dart';
-import 'Screens/Writer/draft_screen.dart';
-import 'Screens/signin_screen.dart';
-import 'Screens/test_screen.dart';
-import 'Task_1/regester_employee.dart';
-import 'Task_1/show_employee.dart';
 
 void main() {
   runApp(const MyApp());

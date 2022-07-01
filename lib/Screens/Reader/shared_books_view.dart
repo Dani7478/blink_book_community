@@ -9,27 +9,21 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
 import '../../main.dart';
 
-class ReaderSummaryView extends StatefulWidget {
-  const ReaderSummaryView({Key? key}) : super(key: key);
+class SharedSummries extends StatefulWidget {
+  const SharedSummries({Key? key}) : super(key: key);
 
   @override
-  State<ReaderSummaryView> createState() => _ReaderSummaryViewState();
+  State<SharedSummries> createState() => _SharedSummriesState();
 }
 
-String pakage = 'free';
-List intrestList = [];
 List listSummries = [];
-int summaryLength = 0;
 
-class _ReaderSummaryViewState extends State<ReaderSummaryView> {
+class _SharedSummriesState extends State<SharedSummries> {
+  int? recieverid;
   @override
   void initState() {
     super.initState();
-    getIntrest();
-    getPakage();
-    getAllSummarries();
-    getLength();
-    setState(() {});
+    getUserId();
   }
 
   @override
@@ -37,99 +31,47 @@ class _ReaderSummaryViewState extends State<ReaderSummaryView> {
     super.dispose();
   }
 
-  getIntrest() async {
+  getUserId() async {
     final prefs = await SharedPreferences.getInstance();
-    int? userid = prefs.getInt('userid');
-    String address =
-        "http://$ip/BlinkBookApi/api/Reader/getuserIntrest?userid=$userid";
-    var response = await http.get(Uri.parse(address));
-    if (response.statusCode == 200) {
-      intrestList = json.decode(response.body);
-
-      print('total intrest ${intrestList.length}');
-    }
-  }
-
-  getPakage() async {
-    final prefs = await SharedPreferences.getInstance();
-    int? userid = prefs.getInt('userid');
-    String address =
-        "http://$ip/BlinkBookApi/api/Reader/getUserPakage?userid=$userid";
-    var response = await http.get(Uri.parse(address));
-    if (response.statusCode == 200) {
-      pakage = json.decode(response.body);
-      print('Currunt package');
-    }
+    recieverid = prefs.getInt('userid');
+    getAllSummarries();
   }
 
   getAllSummarries() async {
-    String address = "http://$ip/BlinkBookApi/api/Reader/getAllPublishSummries";
+    String address =
+        "http://$ip/BlinkBookApi/api/shared/getSharedSummries?recieverid=$recieverid";
     var response = await http.get(Uri.parse(address));
     if (response.statusCode == 200) {
       listSummries = json.decode(response.body);
       print('total list ${listSummries.length}');
     }
-  }
-
-  getLength() {
-    if (pakage.toLowerCase() == 'free') {
-      summaryLength = 1;
-      setState(() {});
-    }
-    if (pakage.toLowerCase() == 'basic') {
-      summaryLength = 5;
-      setState(() {});
-    }
-    if (pakage.toLowerCase() == 'premium') {
-      summaryLength = 10;
-      setState(() {});
-    }
-    if (pakage.toLowerCase() == 'platinium') {
-      summaryLength = 15;
-      setState(() {});
-    }
-    if (listSummries.length < summaryLength) {
-      summaryLength = listSummries.length;
-      setState(() {});
-    }
+    setState(() {});
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(),
-      body: summaryLength == 0 || listSummries.isEmpty
-          ? loading()
-          : Padding(
-              padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
-              child: ListView.builder(
-                  itemCount: summaryLength,
-                  itemBuilder: (context, index) {
-                    // ignore: avoid_print
+      body: Padding(
+        padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
+        child: ListView.builder(
+            itemCount: listSummries.length,
+            itemBuilder: (context, index) {
+              // ignore: avoid_print
 
-                    int summid = listSummries[index]['id'];
-                    String bookname = listSummries[index]['book'];
-                    String author = listSummries[index]['author'];
-                    String image = listSummries[index]['image'];
-                    String category =
-                        listSummries[index]['category']; //coockoing
-                    String summary = listSummries[index]['summary1'];
-                    int userid = listSummries[index]['uid'];
-                    bool ishow = false;
-                    //soicial novels
-                    for (int i = 0; i < intrestList.length; i++) {
-                      if (intrestList[i]['intrest1'].toString().toLowerCase() ==
-                          category.toLowerCase()) {
-                        ishow = true;
-                      }
-                    }
-                    if (ishow == true) {
-                      return summaryCard(summid, bookname, image, category,
-                          author, summary, userid);
-                    }
-                    return Container();
-                  }),
-            ),
+              int summid = listSummries[index]['id'];
+              String bookname = listSummries[index]['book'];
+              String author = listSummries[index]['author'];
+              String image = listSummries[index]['image'];
+              String category = listSummries[index]['category']; //coockoing
+              String summary = listSummries[index]['summary1'];
+              int userid = listSummries[index]['uid'];
+              bool ishow = false;
+
+              return summaryCard(
+                  summid, bookname, image, category, author, summary, userid);
+            }),
+      ),
     );
   }
 

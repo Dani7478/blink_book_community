@@ -1,4 +1,5 @@
 import 'package:blink_book_community/Screens/Reader/favourite_summries.dart';
+import 'package:blink_book_community/Screens/Reader/shared_books_view.dart';
 import 'package:flutter/material.dart';
 
 class ReaderBooksView extends StatelessWidget {
@@ -16,7 +17,7 @@ class ReaderBooksView extends StatelessWidget {
                 Icons.favorite_outlined, 1),
             showCard(
               context,
-              'See Shared Books',
+              'See Friends Share Books',
               'All Friends Share Books',
               Icons.share,
               2,
@@ -57,12 +58,19 @@ class ReaderBooksView extends StatelessWidget {
             ),
             trailing: InkWell(
                 onTap: () {
-                 if(type==1) {
-                   Navigator.push(
-                       context,
-                       MaterialPageRoute(
-                           builder: (context) => const FavouriteSummriesView()));
-                 }
+                  if (type == 1) {
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) =>
+                                const FavouriteSummriesView()));
+                  }
+                  if (type == 2) {
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => const SharedSummries()));
+                  }
                 },
                 child: const Icon(Icons.arrow_forward_ios,
                     color: Colors.black, size: 40)),
